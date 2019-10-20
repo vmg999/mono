@@ -1,0 +1,66 @@
+body{
+    background-color: lightgoldenrodyellow;
+}
+
+a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.transact{
+    float: left;
+    margin: 0 auto;
+    padding-left: 22px;
+}
+.transact h2{
+    text-align: center;
+}
+.table-tr{
+    /*margin: 0 auto;*/
+    border: aqua solid 2px;
+    border-spacing: 0;
+
+}
+
+.table-tr td{
+    font: 20px solid;
+
+    padding: 5px 10px;
+    border: black solid 1px;
+
+}
+
+.upd{
+    display: flex;
+    justify-content: space-between;
+    /*float:right;*/
+}
+.upd button{
+    font-size: 20px;
+    padding: 4px 16px;
+    border-radius: 8px;
+}
+.btn{
+    align-self: center;
+}
+#balance{
+    padding: 4px 6px;
+    font-size: 22px;
+    border: red solid;
+}
+.status{
+    font-size: 20px;
+    padding: 4px 16px;
+    align-self: center;
+    color: dimgray;
+}
+
+.blnc{
+    font-size: 33px;
+}
+.stat{
+    float: left;
+    text-align: center;
+    margin: 0 auto;
+    padding-left: 33px;
+}
