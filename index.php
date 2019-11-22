@@ -51,23 +51,24 @@
     <div class="transact">
         <h2>Транзакции по карте</h2>
         <table class="table-tr">
-
+            <div class="tblhead">
+                <thead>
                 <th>Номер</th>
                 <th>Дата</th>
                 <th>Время</th>
                 <th>Описание</th>
-                <th>MCC</th>
                 <th>Сумма</th>
-            <th>Комиссия</th>
-            <th>Баланс</th>
-
+                <th>Кэшбэк</th>
+                <th>Комиссия</th>
+                <th>Баланс</th>
+                </thead>
+            </div>
             <?php
                 for ($i=$size-1;$i>=0;$i--){
                     echo "<tr><td>".$transaction[$i]['auto_id']."</td>";
                     echo "<td>".date("d.m.Y",($transaction[$i]['time']+10800))."</td>";
                     echo "<td>".date("H:i:s",($transaction[$i]['time']+10800))."</td>";
                     echo "<td>".$transaction[$i]['description']."</td>";
-                    echo "<td>".$transaction[$i]['mcc']."</td>";
                     if ($transaction[$i]['amount']>=0) {
                         echo "<td align='right' style='color: green'>";
                     }
@@ -75,6 +76,7 @@
                         echo "<td align='right' style='color: red'>";
                     }
                     echo ($transaction[$i]['amount'] / 100) . "</td>";
+                    echo "<td>".($transaction[$i]['cashbackAmount']/100)."</td>";
                     echo "<td>".(($transaction[$i]['commissionRate'])/100)."</td>";
                     echo "<td><b>".($transaction[$i]['balance']/100)."</b></td></tr>";
 
@@ -91,6 +93,7 @@
             <th>Месяц</th><th>Приход</th><th>Расход</th>
             <?php
             $comm=0;
+            $cashb=0;
             $minus=0;
             $plus=0;
             $mn_bal=['1'=>['pl'=>0, 'mns'=>0],
@@ -116,7 +119,8 @@
                     $minus+=$transaction[$i]['amount'];
                     $mn_bal["$mnth"]['mns']+=$transaction[$i]['amount'];
                 }
-               $comm+=$transaction[$i]['commissionRate'];
+                $comm+=$transaction[$i]['commissionRate'];
+                $cashb+=$transaction[$i]['cashbackAmount'];
 
             }
 
@@ -131,7 +135,8 @@
             ?>
         </table>
         <?php
-        echo "Комиссия = ".($comm/100);
+        echo "Комиссия = ".($comm/100)."<br>";
+        echo "Кэшбэк = ".($cashb/100)."<br>";
         ?>
     </div>
 </body>

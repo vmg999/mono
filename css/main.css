@@ -8,13 +8,21 @@ a {
 }
 
 .transact{
+    /*position: relative;*/
     float: left;
     margin: 0 auto;
     padding-left: 22px;
 }
 .transact h2{
     text-align: center;
+
 }
+
+.tblhead{
+    position: fixed;
+
+}
+
 .table-tr{
     /*margin: 0 auto;*/
     border: aqua solid 2px;
