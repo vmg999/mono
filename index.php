@@ -90,48 +90,35 @@
         <h2>Stat</h2>
         <table class="table-tr">
 
-            <th>Месяц</th><th>Приход</th><th>Расход</th>
+            <th>Год</th><th>Месяц</th><th>Приход</th><th>Расход</th>
             <?php
             $comm=0;
             $cashb=0;
             $minus=0;
             $plus=0;
-            $mn_bal=['1'=>['pl'=>0, 'mns'=>0],
-                '2'=>['pl'=>0, 'mns'=>0],
-                '3'=>['pl'=>0, 'mns'=>0],
-                '4'=>['pl'=>0, 'mns'=>0],
-                '5'=>['pl'=>0, 'mns'=>0],
-                '6'=>['pl'=>0, 'mns'=>0],
-                '7'=>['pl'=>0, 'mns'=>0],
-                '8'=>['pl'=>0, 'mns'=>0],
-                '9'=>['pl'=>0, 'mns'=>0],
-                '10'=>['pl'=>0, 'mns'=>0],
-                '11'=>['pl'=>0, 'mns'=>0],
-                '12'=>['pl'=>0, 'mns'=>0]];
+            $mn_bal=array();
 
             for ($i=0;$i<$size;$i++){
+                $year=(int)date("Y",$transaction[$i]['time']);
                 $mnth=(int)date("m",$transaction[$i]['time']);
                 if($transaction[$i]['amount']>=0){
                     $plus+=$transaction[$i]['amount'];
-                    $mn_bal["$mnth"]['pl']+=$transaction[$i]['amount'];
+                    @$mn_bal["$year"]["$mnth"]['pl']+=$transaction[$i]['amount'];
                 }
                 else{
                     $minus+=$transaction[$i]['amount'];
-                    $mn_bal["$mnth"]['mns']+=$transaction[$i]['amount'];
+                    @$mn_bal["$year"]["$mnth"]['mns']+=$transaction[$i]['amount'];
                 }
                 $comm+=$transaction[$i]['commissionRate'];
                 $cashb+=$transaction[$i]['cashbackAmount'];
 
             }
-
-            echo "<tr><td>Всего: </td><td>".($plus/100)."</td><td>".($minus/100)."</td></tr>";
-            foreach ($mn_bal as $mn=>$mnb){
-                if($mnb['pl']!=0 or $mnb['mns']!=0){
-                    echo "<tr><td>".$mn."</td><td>".($mnb['pl']/100)."</td><td>".($mnb['mns']/100)."</td></tr>";
+            echo "<tr><td></td><td>Всего: </td><td>".($plus/100)."</td><td>".($minus/100)."</td></tr>";
+            foreach ($mn_bal as $yr=>$mn) {
+                foreach ($mn as $mnth=>$mnbal) {
+                    echo "<tr><td>".$yr."</td><td>".$mnth."</td><td>".($mnbal['pl']/100)."</td><td>".($mnbal['mns']/100)."</td></tr>";
                 }
             }
-
-
             ?>
         </table>
         <?php
