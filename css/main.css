@@ -51,6 +51,13 @@ a {
 .btn{
     align-self: center;
 }
+
+.upd button:hover{
+    cursor: pointer;
+    background: #ffb323;
+
+}
+
 #balance{
     padding: 4px 6px;
     font-size: 22px;

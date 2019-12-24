@@ -11,10 +11,12 @@ body{
 table {
     margin: 0 auto;
     min-width: 700px;
-    border: solid green;
+    border: solid navajowhite;
+    border-collapse: collapse;
 }
 td,th{
-    border: solid 2px red;
+    border: solid 1px red;
+
     font-size: 24px;
     font: solid;
     color: white;
