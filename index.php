@@ -11,6 +11,7 @@ if ($_POST != null) {
 
 $transaction = $ustat->db_get();
 $size = count($transaction);
+var_dump($ustat->person_info);
 ?>
 
 <!DOCTYPE html>
@@ -103,9 +104,11 @@ $size = count($transaction);
         $plus = 0;
         $mn_bal = array();
 
+        $cshb_out = 0; //------------------kostyl
+
         for ($i = 0; $i < $size; $i++) {
-            $year = (int)date("Y", $transaction[$i]['time']);
-            $mnth = (int)date("m", $transaction[$i]['time']);
+            $year = (int)date("Y", ($transaction[$i]['time'] + 2 * 3600));
+            $mnth = (int)date("m", ($transaction[$i]['time'] + 2 * 3600));
             if ($transaction[$i]['amount'] >= 0) {
                 $plus += $transaction[$i]['amount'];
                 @$mn_bal["$year"]["$mnth"]['pl'] += $transaction[$i]['amount'];
@@ -116,18 +119,27 @@ $size = count($transaction);
             $comm += $transaction[$i]['commissionRate'];
             $cashb += $transaction[$i]['cashbackAmount'];
 
+            //ttl cshb out--------------------
+            $cshb = array();
+            if (preg_match("/Виведення кешбеку/", $transaction[$i]['description'])) {
+                preg_match("/\d+\.\d{2}/", $transaction[$i]['description'], $cshb);
+                $cshb_out += (float)$cshb[0];
+            }
+            //ttl csh--------------------
+
         }
+
         echo "<tr><td></td><td>Всего: </td><td>" . ($plus / 100) . "</td><td>" . ($minus / 100) . "</td></tr>";
         foreach ($mn_bal as $yr => $mn) {
             foreach ($mn as $mnth => $mnbal) {
-                echo "<tr><td>" . $yr . "</td><td>" . $mnth . "</td><td>" . ($mnbal['pl'] / 100) . "</td><td>" . ($mnbal['mns'] / 100) . "</td></tr>";
+                echo "<tr><td>" . $yr . "</td><td>" . $mnth . "</td><td>" . (@$mnbal['pl'] / 100) . "</td><td>" . (@$mnbal['mns'] / 100) . "</td></tr>";
             }
         }
         ?>
     </table>
     <?php
     echo "Комиссия = " . ($comm / 100) . "<br>";
-    echo "Кэшбэк = " . ($cashb / 100) . "<br>";
+    echo "Кэшбэк = " . ($cashb / 100 - $cshb_out) . " (Всего " . ($cashb / 100) . ")<br>";
     ?>
 </div>
 </body>

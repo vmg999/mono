@@ -19,6 +19,8 @@ class user_stat
     private $db_name;
     private $db_table;
     private $account_id;
+    private $available_period;
+
     public $person_info;
     public $user_statement;
 
@@ -37,6 +39,7 @@ class user_stat
         global $api;
         global $pers;
         global $state;
+        global $available_period;
 
         $this->db_host = $db_host;
         $this->db_user = $db_user;
@@ -46,6 +49,7 @@ class user_stat
         $this->api = $api;
         $this->pers = $pers;
         $this->state = $state;
+        $this->available_period=$available_period;
     }
 
     /**
@@ -65,9 +69,10 @@ class user_stat
     {
         if(!$this->account_id) {
             $this->get_pers_info();
-            $this->account_id = $this->person_info->accounts[0]->id;  //id аккаунта
+//            $this->account_id = $this->person_info->accounts[0]->id;  //id аккаунта
         }
-        $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $this->account_id . "/" . (time() - 2682000) . "/" . (time()), false, $this->context));
+        $this->account_id="8O-mE8P80KNWg_owEEsP8A";
+        $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $this->account_id . "/" . (time() - $this->available_period) . "/" . (time()), false, $this->context));
         return $this->user_statement;
     }
 
