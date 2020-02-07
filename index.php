@@ -11,7 +11,8 @@ if ($_POST != null) {
 
 $transaction = $ustat->db_get();
 $size = count($transaction);
-var_dump($ustat->person_info);
+
+//var_dump($ustat->person_info);
 ?>
 
 <!DOCTYPE html>
