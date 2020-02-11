@@ -7,89 +7,89 @@ require_once 'config.php';
  */
 class user_stat
 {
-    private $opts;
-    private $context;
-    private $tok;
-    private $api;
-    private $pers;
-    private $state;
-    private $db_host;
-    private $db_user;
-    private $db_psw;
-    private $db_name;
-    private $db_table;
-    private $account_id;
-    private $available_period;
+//    private $opts;
+//    private $context;
+//    private $tok;
+//    private $api;
+//    private $pers;
+//    private $state;
+//    private $db_host;
+//    private $db_user;
+//    private $db_psw;
+//    private $db_name;
+//    private $db_table;
+//    private $account_id;
+//    private $available_period;
 
-    public $person_info;
-    public $user_statement;
+//    public $person_info;
+//    public $user_statement;
 
     public function __construct()
     {
-        global $token;
-        $this->tok = $token;
-        $this->opts = array('http' => array('method' => "GET", 'header' => "X-Token:$this->tok\r\n" . "Cookie: foo=bar\r\n"));
-        $this->context = stream_context_create($this->opts);
+//        global $token;
+//        $this->tok = $token;
+//        $this->opts = array('http' => array('method' => "GET", 'header' => "X-Token:$this->tok\r\n" . "Cookie: foo=bar\r\n"));
+//        $this->context = stream_context_create($this->opts);
 
-        global $db_host;
-        global $db_user;
-        global $db_psw;
-        global $db_name;
-        global $db_table;
-        global $api;
-        global $pers;
-        global $state;
-        global $available_period;
+//        global $db_host;
+//        global $db_user;
+//        global $db_psw;
+//        global $db_name;
+//        global $db_table;
+//        global $api;
+//        global $pers;
+//        global $state;
+//        global $available_period;
 
-        $this->db_host = $db_host;
-        $this->db_user = $db_user;
-        $this->db_psw = $db_psw;
-        $this->db_name = $db_name;
-        $this->db_table = $db_table;
-        $this->api = $api;
-        $this->pers = $pers;
-        $this->state = $state;
-        $this->available_period=$available_period;
+//        $this->db_host = $db_host;
+//        $this->db_user = $db_user;
+//        $this->db_psw = $db_psw;
+//        $this->db_name = $db_name;
+//        $this->db_table = $db_table;
+//        $this->api = $api;
+//        $this->pers = $pers;
+//        $this->state = $state;
+//        $this->available_period=$available_period;
     }
 
-    /**
-     * Получение информации о юзере (id аккаунта)
-     */
+//    /**
+//     * Получение информации о юзере (id аккаунта)
+//     */
+//
+//    public function get_pers_info()
+//    {
+//        $this->person_info = json_decode(file_get_contents($this->api . $this->pers, false, $this->context));
+//        return $this->person_info;
+//    }
 
-    public function get_pers_info()
-    {
-        $this->person_info = json_decode(file_get_contents($this->api . $this->pers, false, $this->context));
-        return $this->person_info;
-    }
+//    /**
+//     * Получение всех транзакций за месяц
+//     */
+//    public function get_user_statement()
+//    {
+//        if(!$this->account_id) {
+//            $this->get_pers_info();
+////            $this->account_id = $this->person_info->accounts[0]->id;  //id аккаунта
+//        }
+//        $this->account_id="8O-mE8P80KNWg_owEEsP8A";
+//        $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $this->account_id . "/" . (time() - $this->available_period) . "/" . (time()), false, $this->context));
+//        return $this->user_statement;
+//    }
 
-    /**
-     * Получение всех транзакций за месяц
-     */
-    public function get_user_statement()
-    {
-        if(!$this->account_id) {
-            $this->get_pers_info();
-//            $this->account_id = $this->person_info->accounts[0]->id;  //id аккаунта
-        }
-        $this->account_id="8O-mE8P80KNWg_owEEsP8A";
-        $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $this->account_id . "/" . (time() - $this->available_period) . "/" . (time()), false, $this->context));
-        return $this->user_statement;
-    }
-
-    /**
-     * Получение транзакций из БД
-     */
-    public function db_get()
-    {
-        $db = new mysqli($this->db_host, $this->db_user, $this->db_psw, $this->db_name);
-        $db->set_charset("utf8");
-
-        $query = "SELECT * FROM $this->db_table";
-        $res = $db->query($query);
-        $db->close();
-        return $res->fetch_all(1);
-
-    }
+//    /**
+//     * Получение транзакций из БД
+//     */
+//    public function db_get()
+//    {
+//        $db = new mysqli($this->db_host, $this->db_user, $this->db_psw, $this->db_name);
+//        $db->set_charset("utf8");
+//
+//        $query = "SELECT * FROM $this->db_table";
+//        $res = $db->query($query);
+//        $db->close();
+//        return $res->fetch_all(1);
+//
+//    }
 
     /**
      * Сравнение сохраненных в БД и полученных транзакций и вычисление новых
