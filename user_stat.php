@@ -12,16 +12,17 @@ class user_stat
 {
     private $db;
     private $api_user_stat;
+
     public $user_info;
     public $saved_transactions;
+    public $statistics_by_transactnions;
 
-
-    //account kostyl
+    private $account_id = '';//account kostyl
 
     public function __construct()
     {
-        $this->db=new db();
-        $this->api_user_stat=new api_user_stat();
+        $this->db = new db();
+        $this->api_user_stat = new api_user_stat();
 
 
     }
@@ -29,16 +30,18 @@ class user_stat
     /**
      * Получение информации о пользователе
      */
-    public function get_user_info(){
-        $this->user_info=$this->api_user_stat->get_pers_info();
+    public function get_user_info()
+    {
+        $this->user_info = $this->api_user_stat->get_pers_info();
         return $this->user_info;
     }
 
     /**
      * Получение сохраненных транзакций
      */
-    public function get_saved_transactions($last='all'){
-        $this->saved_transactions=$this->db->get_transactions($last);
+    public function get_saved_transactions($last = 'all')
+    {
+        $this->saved_transactions = $this->db->get_transactions($last);
         return $this->saved_transactions;
     }
 
@@ -81,16 +84,71 @@ class user_stat
     public function db_save_new_transaction()
     {
         $new_transactions = $this->is_there_new_transactions();
-        $resq=$this->db->save_transactions($new_transactions);
+        $resq = $this->db->save_transactions($new_transactions);
         return $resq;
     }
 
     /**
      * Вычисление различной статистики
      */
-    public function get_transactions_statistics(){
-        //
+    public function get_statistics_by_transactnions()
+    {
+        if (!$this->saved_transactions) {
+            $this->saved_transactions = $this->get_saved_transactions();
+        }
 
+        $quantity = count($this->saved_transactions);
+        $transactions = $this->saved_transactions;
+        $commission = 0;
+        $total_cashback = 0;
+        $cashback_out = 0;
+        $minus = 0;
+        $plus = 0;
+        $mn_bal = array();
+        $percents = 0;
+
+
+        for ($i = 0; $i < $quantity; $i++) {
+            $year = (int)date("Y", ($transactions[$i]['time'] + 2 * 3600));
+            $mnth = (int)date("m", ($transactions[$i]['time'] + 2 * 3600));
+            if ($transactions[$i]['amount'] >= 0) {
+                $plus += $transactions[$i]['amount'];
+                @$mn_bal["$year"]["$mnth"]['pl'] += $transactions[$i]['amount'];
+            } else {
+                $minus += $transactions[$i]['amount'];
+                @$mn_bal["$year"]["$mnth"]['mns'] += $transactions[$i]['amount'];
+            }
+            $commission += $transactions[$i]['commissionRate']; //комиссия
+            $total_cashback += $transactions[$i]['cashbackAmount']; //общий кешбек
+
+            //выведенный кешбек
+            $cshb = array();
+            if (preg_match("/Виведення кешбеку/", $transactions[$i]['description'])) {
+                preg_match("/\d+\.\d{2}/", $transactions[$i]['description'], $cshb);
+                $cashback_out += (float)$cshb[0];
+            }
+            //проценты--------------------------------------------------
+            if (preg_match("/Начисление процентов/", $transactions[$i]['description']) or
+                preg_match("/Нарахування відсотків/", $transactions[$i]['description'])) {
+                $percents += $transactions[$i]['amount'];
+            }
+
+        }
+        //средний месяц-----------------------------------------------------
+        $mnttl = 0;
+        foreach ($mn_bal as $y) {
+            $mnttl += count($y);
+        }
+        $last = @end(end($mn_bal));
+        $average_mnt_plus = (int)floor(($plus - $last['pl']) / ($mnttl - 1));
+        $average_mnt_minus = (int)floor(($minus - $last['mns']) / ($mnttl - 1));
+        //---------------------------------------------------------------------
+        $cashback = $total_cashback - ((int)($cashback_out * 100));
+
+        $this->statistics_by_transactnions = compact('quantity', 'commission', 'total_cashback',
+            'cashback', 'percents', 'plus', 'minus',
+            'average_mnt_plus', 'average_mnt_minus', 'mn_bal');
+        return $this->statistics_by_transactnions;
     }
-}
 
+}
