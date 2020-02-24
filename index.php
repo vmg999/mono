@@ -9,10 +9,10 @@ if ($_POST != null) {
     }
 }
 
-$transaction = $ustat->db_get();
+$transaction = $ustat->get_saved_transactions();
 $size = count($transaction);
 
-var_dump($ustat->person_info);
+//var_dump($ustat->get_user_info());
 ?>
 
 <!DOCTYPE html>

@@ -1,5 +1,4 @@
 <?php
-require_once '../config.php';
 
 class api_user_stat
 {
@@ -50,8 +49,3 @@ class api_user_stat
         return $this->user_statement;
     }
 }
-
-//$aa=new api_user_stat();
-//$id="_VtvDjnV-eOzDfH0vvQuzQ";
-//$z=$aa->get_user_statement($id);
-//var_dump($z);
