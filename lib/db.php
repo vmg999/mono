@@ -37,12 +37,11 @@ class db
     /**
      * Получение транзакций из БД
      */
-    public function get_transactions($last='all')
+    public function get_transactions($last = 'all')
     {
         if ((int)$last) {
             $query = "SELECT * FROM $this->db_table ORDER BY auto_id DESC LIMIT $last";
-        }
-        else{
+        } else {
             $query = "SELECT * FROM $this->db_table";
         }
         $this->res = $this->database->query($query);
@@ -52,7 +51,8 @@ class db
     /**
      * Запись транзакций в БД
      */
-    public function save_transactions($new_transactions){
+    public function save_transactions($new_transactions)
+    {
         if ($new_transactions != 0) {
             $nt_size = count($new_transactions);
             for ($i = 0; $i < $nt_size; $i++) {

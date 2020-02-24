@@ -11,8 +11,8 @@ if ($_POST != null) {
 
 $transaction = $ustat->get_saved_transactions();
 $size = count($transaction);
+$user_info=$ustat->get_user_info();
 
-//var_dump($ustat->get_user_info());
 ?>
 
 <!DOCTYPE html>
@@ -28,11 +28,18 @@ $size = count($transaction);
 <a href="index.php"><h1>Monobank INFO</h1></a>
 <div class="upd">
     <div id="balance">
-        <p><b>Текущий баланс:
+        <p><b>Текущий баланс '<?php echo $user_info->accounts[0]->type;?>':
                 <span class="blnc">
-                    <?php echo($transaction[$size - 1]['balance'] / 100); ?>
+                    <?php echo($user_info->accounts[0]->balance / 100);
+                    ?>
                 </span>
-            </b></p>
+         </b></p>
+        <p><b>Текущий баланс '<?php echo $user_info->accounts[1]->type;?>':
+                <span class="blnc">
+                    <?php echo($user_info->accounts[1]->balance / 100);
+                    ?>
+                </span>
+         </b></p>
     </div>
 
     <div class="status">
