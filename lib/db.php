@@ -6,7 +6,6 @@ class db
     private $db_user;
     private $db_psw;
     private $db_name;
-    private $db_table;
     private $database;
 
     public $res;
@@ -17,13 +16,11 @@ class db
         global $db_user;
         global $db_psw;
         global $db_name;
-        global $db_table;
 
         $this->db_host = $db_host;
         $this->db_user = $db_user;
         $this->db_psw = $db_psw;
         $this->db_name = $db_name;
-        $this->db_table = $db_table;
 
         $this->database = new mysqli($this->db_host, $this->db_user, $this->db_psw, $this->db_name);
         $this->database->set_charset("utf8");
@@ -37,12 +34,12 @@ class db
     /**
      * Получение транзакций из БД
      */
-    public function get_transactions($last = 'all')
+    public function get_transactions($table, $last = 'all')
     {
         if ((int)$last) {
-            $query = "SELECT * FROM $this->db_table ORDER BY auto_id DESC LIMIT $last";
+            $query = "SELECT * FROM $table ORDER BY auto_id DESC LIMIT $last";
         } else {
-            $query = "SELECT * FROM $this->db_table";
+            $query = "SELECT * FROM $table";
         }
         $this->res = $this->database->query($query);
         return $this->res->fetch_all(1);
@@ -51,7 +48,7 @@ class db
     /**
      * Запись транзакций в БД
      */
-    public function save_transactions($new_transactions)
+    public function save_transactions($table, $new_transactions)
     {
         if ($new_transactions != 0) {
             $nt_size = count($new_transactions);
@@ -73,7 +70,7 @@ class db
                     $hold = 0;
                 }
 
-                $query = "INSERT INTO $this->db_table (id, time, description, mcc, amount, 
+                $query = "INSERT INTO $table (id, time, description, mcc, amount, 
                           operationAmount, currencyCode, commissionRate, cashbackAmount, balance,
                            hold) VALUES('$id', $time,'$description',$mcc, $amount, $operationAmount,
                             $currencyCode, $commissionRate, $cashbackAmount, $balance, $hold)";

@@ -6,25 +6,33 @@ require_once 'lib/api_user_stat.php';
 
 /**
  * Class user_stat
- * Получение статистики транзакций
+ * Получение транзакций
  */
 class user_stat
 {
     private $db;
     private $api_user_stat;
+    private $db_table_template;
+    private $default_table;
+    private $account_id;
 
+    public $table;
+    public $account;
     public $user_info;
     public $saved_transactions;
     public $statistics_by_transactnions;
-
-    private $account_id = '';//account kostyl
 
     public function __construct()
     {
         $this->db = new db();
         $this->api_user_stat = new api_user_stat();
 
+        global $db_table_template;
+        global $default_table;
+        $this->db_table_template=$db_table_template;
+        $this->default_table=$default_table;
 
+        $this->set_account();
     }
 
     /**
@@ -37,11 +45,31 @@ class user_stat
     }
 
     /**
+     * Выбор аккаунта
+     */
+    public function set_account($account="black"){
+        if(!$this->user_info){
+            $this->get_user_info();
+        }
+
+        foreach ($this->user_info->accounts as $a){
+           if($a->type == $account){
+               $this->account=$account;
+               $this->account_id=$a->id;
+               $this->table="$this->db_table_template"."$account";
+           }
+           else{
+               $this->table=$this->default_table;
+           }
+        }
+    }
+
+    /**
      * Получение сохраненных транзакций
      */
-    public function get_saved_transactions($last = 'all')
+    public function get_saved_transactions($table, $last = 'all')
     {
-        $this->saved_transactions = $this->db->get_transactions($last);
+        $this->saved_transactions = $this->db->get_transactions($table, $last);
         return $this->saved_transactions;
     }
 
@@ -51,7 +79,7 @@ class user_stat
     public function is_there_new_transactions()
     {
         $new_transactions = array();
-        $db_data = $this->db->get_transactions();
+        $db_data = $this->db->get_transactions($this->table);
         $user_bank_stat = $this->api_user_stat->get_user_statement($this->account_id);
         if ($user_bank_stat) {
             $array_size = count($user_bank_stat);
@@ -84,7 +112,7 @@ class user_stat
     public function db_save_new_transaction()
     {
         $new_transactions = $this->is_there_new_transactions();
-        $resq = $this->db->save_transactions($new_transactions);
+        $resq = $this->db->save_transactions($this->table, $new_transactions);
         return $resq;
     }
 
@@ -152,3 +180,8 @@ class user_stat
     }
 
 }
+
+//$t=new user_stat();
+//$r=$t->set_account('white');
+//var_dump($t->account_id);
+////var_dump($t->table);

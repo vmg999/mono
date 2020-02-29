@@ -8,10 +8,20 @@ if ($_POST != null) {
         //header("location:index.php");
     }
 }
+if ($_GET != null){
+    $ustat->set_account($_GET['account']);
+}
 
-$transaction = $ustat->get_saved_transactions();
+$transaction = $ustat->get_saved_transactions($ustat->table);
 $size = count($transaction);
-$user_info=$ustat->get_user_info();
+
+//----------исправить
+if($ustat->user_info){
+    $user_info=$ustat->user_info;
+}else {
+    $user_info = $ustat->get_user_info();
+}
+//------------
 
 ?>
 
@@ -60,7 +70,10 @@ $user_info=$ustat->get_user_info();
 </div>
 
 <div class="transact">
-    <h2>Транзакции по карте</h2>
+    <h2>Транзакции по карте <button name="account"><a href="/?account=black">Black</a></button>
+        <button name="account"><a href="/?account=white">White</a></button>
+    </h2>
+
     <table class="table-tr">
         <div class="tblhead">
             <thead>
