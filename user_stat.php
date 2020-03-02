@@ -125,7 +125,7 @@ class user_stat
     public function get_statistics_by_transactnions()
     {
         if (!$this->saved_transactions) {
-            $this->saved_transactions = $this->get_saved_transactions($this->table);
+            $this->get_saved_transactions();
         }
 
         $quantity = count($this->saved_transactions);
