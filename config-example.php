@@ -4,7 +4,8 @@ $db_host='localhost';
 $db_user='';
 $db_psw='';
 $db_name='';
-$db_table='monobank_transaction';
+$db_table_template='monobank_transactions_';
+$default_table='monobank_transactions_black';
 $iso4217="https://www.currency-iso.org/dam/downloads/lists/list_one.xml";
 
 $available_period=2682000;

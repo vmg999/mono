@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/api_mono_currency.php';
+require_once 'lib/api_currency.php';
 $cur = new get_cur;
 $currency = $cur->get_currency();
 $t = count($currency);

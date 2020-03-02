@@ -1,18 +1,17 @@
 <?php
 require_once 'user_stat.php';
 $ustat = new user_stat();
+$ustat->get_user_info();
 
-if ($_POST != null) {
-    if ($_POST['Getnew'] === 'Update') {
-        $res = $ustat->db_save_new_transaction();
-        //header("location:index.php");
-    }
+if ($_GET != null) {
+    $ustat->set_account($_GET['account']);
+    $db_answer = $ustat->db_save_new_transaction();
 }
 
-$transaction = $ustat->db_get();
-$size = count($transaction);
+$transactions = $ustat->get_saved_transactions();
+$size = count($transactions);
 
-//var_dump($ustat->person_info);
+$ustat->get_statistics_by_transactnions();
 ?>
 
 <!DOCTYPE html>
@@ -26,34 +25,43 @@ $size = count($transaction);
 
 <body>
 <a href="index.php"><h1>Monobank INFO</h1></a>
-<div class="upd">
+<div>
     <div id="balance">
-        <p><b>Текущий баланс:
+        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[0]->type); ?>:
                 <span class="blnc">
-                    <?php echo($transaction[$size - 1]['balance'] / 100); ?>
+                    <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
                 </span>
-            </b></p>
-    </div>
-
-    <div class="status">
-        <p><b>
-                <?php if (isset($res)) {
-                    echo $res;
-                } ?>
+            </b>
+        </p>
+        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[1]->type); ?>:
+                <span class="blnc">
+                    <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
+                </span>
             </b>
         </p>
     </div>
 
-    <div class="btn">
-        <form action="index.php" method="post">
-            <button name="Getnew" value="Update">Получить новые транзакции</button>
-        </form>
-
+    <div class="status">
+        <p><b>
+                <?php if (isset($db_answer)) {
+                    echo $db_answer;
+                } ?>
+            </b>
+        </p>
     </div>
 </div>
 
 <div class="transact">
-    <h2>Транзакции по карте</h2>
+    <div class="upd">
+        <div class="upd"><h2>Транзакции по карте: </h2></div>
+        <div class="upd">
+            <button name="account"><a href="/?account=black">Black</a></button>
+        </div>
+        <div class="upd">
+            <button name="account"><a href="/?account=white">White</a></button>
+        </div>
+
+    </div>
     <table class="table-tr">
         <div class="tblhead">
             <thead>
@@ -62,28 +70,29 @@ $size = count($transaction);
             <th>Время</th>
             <th>Описание</th>
             <th>Сумма</th>
-            <th>mcc</th>
+            <!--<th>mcc</th>-->
             <th>Кэшбэк</th>
-            <th>Комиссия</th>
+            <!--<th>Комиссия</th>-->
             <th>Баланс</th>
             </thead>
         </div>
         <?php
-        for ($i = $size - 1; $i >= 0; $i--) {
-            echo "<tr><td>" . $transaction[$i]['auto_id'] . "</td>";
-            echo "<td>" . date("d.m.Y", ($transaction[$i]['time'] + 2 * 3600)) . "</td>";
-            echo "<td>" . date("H:i:s", ($transaction[$i]['time'] + 2 * 3600)) . "</td>";
-            echo "<td>" . $transaction[$i]['description'] . "</td>";
-            if ($transaction[$i]['amount'] >= 0) {
+        for ($i = $size - 1; $i >= ($size - 10); $i--) {
+            @extract($transactions[$i]);
+            echo "<tr><td>" . $auto_id . "</td>";
+            echo "<td>" . date("d.m.Y", ($time + 2 * 3600)) . "</td>";
+            echo "<td>" . date("H:i:s", ($time + 2 * 3600)) . "</td>";
+            echo "<td>" . $description . "</td>";
+            if ($amount >= 0) {
                 echo "<td align='right' style='color: green'>";
             } else {
                 echo "<td align='right' style='color: red'>";
             }
-            echo ($transaction[$i]['amount'] / 100) . "</td>";
-            echo "<td>" . ($transaction[$i]['mcc']) . "</td>";
-            echo "<td>" . ($transaction[$i]['cashbackAmount'] / 100) . "</td>";
-            echo "<td>" . (($transaction[$i]['commissionRate']) / 100) . "</td>";
-            echo "<td><b>" . ($transaction[$i]['balance'] / 100) . "</b></td></tr>";
+            echo ($amount / 100) . "</td>";
+            //echo "<td>" . $mcc . "</td>";
+            echo "<td>" . ($cashbackAmount / 100) . "</td>";
+            //echo "<td>" . ($commissionRate / 100) . "</td>";
+            echo "<td><b>" . ($balance / 100) . "</b></td></tr>";
         }
         ?>
 
@@ -99,38 +108,10 @@ $size = count($transaction);
         <th>Приход</th>
         <th>Расход</th>
         <?php
-        $comm = 0;
-        $cashb = 0;
-        $minus = 0;
-        $plus = 0;
-        $mn_bal = array();
-
-        $cshb_out = 0; //------------------kostyl
-
-        for ($i = 0; $i < $size; $i++) {
-            $year = (int)date("Y", ($transaction[$i]['time'] + 2 * 3600));
-            $mnth = (int)date("m", ($transaction[$i]['time'] + 2 * 3600));
-            if ($transaction[$i]['amount'] >= 0) {
-                $plus += $transaction[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['pl'] += $transaction[$i]['amount'];
-            } else {
-                $minus += $transaction[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['mns'] += $transaction[$i]['amount'];
-            }
-            $comm += $transaction[$i]['commissionRate'];
-            $cashb += $transaction[$i]['cashbackAmount'];
-
-            //ttl cshb out--------------------
-            $cshb = array();
-            if (preg_match("/Виведення кешбеку/", $transaction[$i]['description'])) {
-                preg_match("/\d+\.\d{2}/", $transaction[$i]['description'], $cshb);
-                $cshb_out += (float)$cshb[0];
-            }
-            //ttl csh--------------------
-
-        }
+        extract($ustat->statistics_by_transactnions);
 
         echo "<tr><td></td><td>Всего: </td><td>" . ($plus / 100) . "</td><td>" . ($minus / 100) . "</td></tr>";
+        echo "<tr><td></td><td>Средний</td><td>" . floor($average_mnt_plus / 100) . "</td><td>" . floor($average_mnt_minus / 100) . "</td></tr>";
         foreach ($mn_bal as $yr => $mn) {
             foreach ($mn as $mnth => $mnbal) {
                 echo "<tr><td>" . $yr . "</td><td>" . $mnth . "</td><td>" . (@$mnbal['pl'] / 100) . "</td><td>" . (@$mnbal['mns'] / 100) . "</td></tr>";
@@ -138,10 +119,19 @@ $size = count($transaction);
         }
         ?>
     </table>
-    <?php
-    echo "Комиссия = " . ($comm / 100) . "<br>";
-    echo "Кэшбэк = " . ($cashb / 100 - $cshb_out) . " (Всего " . ($cashb / 100) . ")<br>";
-    ?>
+
+</div>
+
+<div class="stat">
+    <h2>Stat</h2>
+    <table class="table-tr">
+        <?php
+        echo "<tr><td>Комиссия</td><td>" . ($commission / 100) . "</td></tr>";
+        echo "<tr><td>Кэшбек</td><td>" . ($cashback / 100) . "</td></tr>";
+        echo "<tr><td>Весь Кэшбек</td><td>" . ($total_cashback / 100) . "</td></tr>";
+        echo "<tr><td>Проценты</td><td>" . ($percents / 100) . "</td></tr>";
+        ?>
+    </table>
 </div>
 </body>
 </html>

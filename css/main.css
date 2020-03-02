@@ -40,13 +40,17 @@ a {
 
 .upd{
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     /*float:right;*/
 }
 .upd button{
     font-size: 20px;
     padding: 4px 16px;
+    margin: 0 15px;
     border-radius: 8px;
+
 }
 .btn{
     align-self: center;
@@ -62,6 +66,10 @@ a {
     padding: 4px 6px;
     font-size: 22px;
     border: red solid;
+    width: 25%;
+}
+#balance p{
+    margin: 0;
 }
 .status{
     font-size: 20px;
