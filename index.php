@@ -2,7 +2,6 @@
 require_once 'user_stat.php';
 $ustat = new user_stat();
 $ustat->get_user_info();
-//$ustat->get_statistics_by_transactnions();
 
 if ($_GET != null) {
     $ustat->set_account($_GET['account']);
@@ -11,6 +10,8 @@ if ($_GET != null) {
 
 $transactions = $ustat->get_saved_transactions();
 $size = count($transactions);
+
+$ustat->get_statistics_by_transactnions();
 ?>
 
 <!DOCTYPE html>
@@ -26,13 +27,13 @@ $size = count($transactions);
 <a href="index.php"><h1>Monobank INFO</h1></a>
 <div>
     <div id="balance">
-        <p><b>Текущий баланс '<?php echo $ustat->user_info->accounts[0]->type; ?>':
+        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[0]->type); ?>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
                 </span>
             </b>
         </p>
-        <p><b>Текущий баланс '<?php echo $ustat->user_info->accounts[1]->type; ?>':
+        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[1]->type); ?>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
                 </span>
@@ -69,9 +70,9 @@ $size = count($transactions);
             <th>Время</th>
             <th>Описание</th>
             <th>Сумма</th>
-            <!--            <th>mcc</th>-->
+            <!--<th>mcc</th>-->
             <th>Кэшбэк</th>
-            <!--            <th>Комиссия</th>-->
+            <!--<th>Комиссия</th>-->
             <th>Баланс</th>
             </thead>
         </div>
@@ -107,38 +108,10 @@ $size = count($transactions);
         <th>Приход</th>
         <th>Расход</th>
         <?php
-        $comm = 0;
-        $cashb = 0;
-        $minus = 0;
-        $plus = 0;
-        $mn_bal = array();
-
-        $cshb_out = 0; //------------------kostyl
-
-        for ($i = 0; $i < $size; $i++) {
-            $year = (int)date("Y", ($transactions[$i]['time'] + 2 * 3600));
-            $mnth = (int)date("m", ($transactions[$i]['time'] + 2 * 3600));
-            if ($transactions[$i]['amount'] >= 0) {
-                $plus += $transactions[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['pl'] += $transactions[$i]['amount'];
-            } else {
-                $minus += $transactions[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['mns'] += $transactions[$i]['amount'];
-            }
-            $comm += $transactions[$i]['commissionRate'];
-            $cashb += $transactions[$i]['cashbackAmount'];
-
-            //ttl cshb out--------------------
-            $cshb = array();
-            if (preg_match("/Виведення кешбеку/", $transactions[$i]['description'])) {
-                preg_match("/\d+\.\d{2}/", $transactions[$i]['description'], $cshb);
-                $cshb_out += (float)$cshb[0];
-            }
-            //ttl csh--------------------
-
-        }
+        extract($ustat->statistics_by_transactnions);
 
         echo "<tr><td></td><td>Всего: </td><td>" . ($plus / 100) . "</td><td>" . ($minus / 100) . "</td></tr>";
+        echo "<tr><td></td><td>Средний</td><td>" . floor($average_mnt_plus / 100) . "</td><td>" . floor($average_mnt_minus / 100) . "</td></tr>";
         foreach ($mn_bal as $yr => $mn) {
             foreach ($mn as $mnth => $mnbal) {
                 echo "<tr><td>" . $yr . "</td><td>" . $mnth . "</td><td>" . (@$mnbal['pl'] / 100) . "</td><td>" . (@$mnbal['mns'] / 100) . "</td></tr>";
@@ -146,10 +119,19 @@ $size = count($transactions);
         }
         ?>
     </table>
-    <?php
-    echo "Комиссия = " . ($comm / 100) . "<br>";
-    echo "Кэшбэк = " . ($cashb / 100 - $cshb_out) . " (Всего " . ($cashb / 100) . ")<br>";
-    ?>
+
+</div>
+
+<div class="stat">
+    <h2>Stat</h2>
+    <table class="table-tr">
+        <?php
+        echo "<tr><td>Комиссия</td><td>" . ($commission / 100) . "</td></tr>";
+        echo "<tr><td>Кэшбек</td><td>" . ($cashback / 100) . "</td></tr>";
+        echo "<tr><td>Весь Кэшбек</td><td>" . ($total_cashback / 100) . "</td></tr>";
+        echo "<tr><td>Проценты</td><td>" . ($percents / 100) . "</td></tr>";
+        ?>
+    </table>
 </div>
 </body>
 </html>

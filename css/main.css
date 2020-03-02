@@ -68,6 +68,9 @@ a {
     border: red solid;
     width: 25%;
 }
+#balance p{
+    margin: 0;
+}
 .status{
     font-size: 20px;
     padding: 4px 16px;
