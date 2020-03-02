@@ -29,8 +29,8 @@ class user_stat
 
         global $db_table_template;
         global $default_table;
-        $this->db_table_template=$db_table_template;
-        $this->default_table=$default_table;
+        $this->db_table_template = $db_table_template;
+        $this->default_table = $default_table;
 
         $this->set_account();
     }
@@ -47,29 +47,32 @@ class user_stat
     /**
      * Выбор аккаунта
      */
-    public function set_account($account="black"){
-        if(!$this->user_info){
+    public function set_account($account = "black")
+    {
+        if (!$this->user_info) {
             $this->get_user_info();
         }
 
-        foreach ($this->user_info->accounts as $a){
-           if($a->type == $account){
-               $this->account=$account;
-               $this->account_id=$a->id;
-               $this->table="$this->db_table_template"."$account";
-           }
-           else{
-               $this->table=$this->default_table;
-           }
+        foreach ($this->user_info->accounts as $a) {
+            if ($a->type == $account) {
+                $this->account = $account;
+                $this->account_id = $a->id;
+                $this->table = "$this->db_table_template" . "$account";
+            } else {
+                $this->table = $this->default_table;
+            }
         }
     }
 
     /**
      * Получение сохраненных транзакций
+     * @param $table
+     * @param string $last
+     * @return mixed
      */
-    public function get_saved_transactions($table, $last = 'all')
+    public function get_saved_transactions($last = 'all')
     {
-        $this->saved_transactions = $this->db->get_transactions($table, $last);
+        $this->saved_transactions = $this->db->get_transactions($this->table, $last);
         return $this->saved_transactions;
     }
 
@@ -122,7 +125,7 @@ class user_stat
     public function get_statistics_by_transactnions()
     {
         if (!$this->saved_transactions) {
-            $this->saved_transactions = $this->get_saved_transactions();
+            $this->saved_transactions = $this->get_saved_transactions($this->table);
         }
 
         $quantity = count($this->saved_transactions);
@@ -157,7 +160,7 @@ class user_stat
             }
             //проценты--------------------------------------------------
             if (preg_match("/Начисление процентов/", $transactions[$i]['description']) or
-                preg_match("/Нарахування відсотків/", $transactions[$i]['description'])) {
+                preg_match("/відсотк/", $transactions[$i]['description'])) {
                 $percents += $transactions[$i]['amount'];
             }
 
@@ -169,7 +172,7 @@ class user_stat
         }
         $last = @end(end($mn_bal));
         $average_mnt_plus = (int)floor(($plus - $last['pl']) / ($mnttl - 1));
-        $average_mnt_minus = (int)floor(($minus - $last['mns']) / ($mnttl - 1));
+        @$average_mnt_minus = (int)floor(($minus - $last['mns']) / ($mnttl - 1));
         //---------------------------------------------------------------------
         $cashback = $total_cashback - ((int)($cashback_out * 100));
 
@@ -180,8 +183,3 @@ class user_stat
     }
 
 }
-
-//$t=new user_stat();
-//$r=$t->set_account('white');
-//var_dump($t->account_id);
-////var_dump($t->table);

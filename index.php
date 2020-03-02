@@ -1,28 +1,16 @@
 <?php
 require_once 'user_stat.php';
 $ustat = new user_stat();
+$ustat->get_user_info();
+//$ustat->get_statistics_by_transactnions();
 
-if ($_POST != null) {
-    if ($_POST['Getnew'] === 'Update') {
-        $res = $ustat->db_save_new_transaction();
-        //header("location:index.php");
-    }
-}
-if ($_GET != null){
+if ($_GET != null) {
     $ustat->set_account($_GET['account']);
+    $db_answer = $ustat->db_save_new_transaction();
 }
 
-$transaction = $ustat->get_saved_transactions($ustat->table);
-$size = count($transaction);
-
-//----------исправить
-if($ustat->user_info){
-    $user_info=$ustat->user_info;
-}else {
-    $user_info = $ustat->get_user_info();
-}
-//------------
-
+$transactions = $ustat->get_saved_transactions();
+$size = count($transactions);
 ?>
 
 <!DOCTYPE html>
@@ -36,44 +24,43 @@ if($ustat->user_info){
 
 <body>
 <a href="index.php"><h1>Monobank INFO</h1></a>
-<div class="upd">
+<div>
     <div id="balance">
-        <p><b>Текущий баланс '<?php echo $user_info->accounts[0]->type;?>':
+        <p><b>Текущий баланс '<?php echo $ustat->user_info->accounts[0]->type; ?>':
                 <span class="blnc">
-                    <?php echo($user_info->accounts[0]->balance / 100);
-                    ?>
+                    <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
                 </span>
-         </b></p>
-        <p><b>Текущий баланс '<?php echo $user_info->accounts[1]->type;?>':
+            </b>
+        </p>
+        <p><b>Текущий баланс '<?php echo $ustat->user_info->accounts[1]->type; ?>':
                 <span class="blnc">
-                    <?php echo($user_info->accounts[1]->balance / 100);
-                    ?>
+                    <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
                 </span>
-         </b></p>
-    </div>
-
-    <div class="status">
-        <p><b>
-                <?php if (isset($res)) {
-                    echo $res;
-                } ?>
             </b>
         </p>
     </div>
 
-    <div class="btn">
-        <form action="index.php" method="post">
-            <button name="Getnew" value="Update">Получить новые транзакции</button>
-        </form>
-
+    <div class="status">
+        <p><b>
+                <?php if (isset($db_answer)) {
+                    echo $db_answer;
+                } ?>
+            </b>
+        </p>
     </div>
 </div>
 
 <div class="transact">
-    <h2>Транзакции по карте <button name="account"><a href="/?account=black">Black</a></button>
-        <button name="account"><a href="/?account=white">White</a></button>
-    </h2>
+    <div class="upd">
+        <div class="upd"><h2>Транзакции по карте: </h2></div>
+        <div class="upd">
+            <button name="account"><a href="/?account=black">Black</a></button>
+        </div>
+        <div class="upd">
+            <button name="account"><a href="/?account=white">White</a></button>
+        </div>
 
+    </div>
     <table class="table-tr">
         <div class="tblhead">
             <thead>
@@ -82,28 +69,29 @@ if($ustat->user_info){
             <th>Время</th>
             <th>Описание</th>
             <th>Сумма</th>
-            <th>mcc</th>
+            <!--            <th>mcc</th>-->
             <th>Кэшбэк</th>
-            <th>Комиссия</th>
+            <!--            <th>Комиссия</th>-->
             <th>Баланс</th>
             </thead>
         </div>
         <?php
-        for ($i = $size - 1; $i >= 0; $i--) {
-            echo "<tr><td>" . $transaction[$i]['auto_id'] . "</td>";
-            echo "<td>" . date("d.m.Y", ($transaction[$i]['time'] + 2 * 3600)) . "</td>";
-            echo "<td>" . date("H:i:s", ($transaction[$i]['time'] + 2 * 3600)) . "</td>";
-            echo "<td>" . $transaction[$i]['description'] . "</td>";
-            if ($transaction[$i]['amount'] >= 0) {
+        for ($i = $size - 1; $i >= ($size - 10); $i--) {
+            @extract($transactions[$i]);
+            echo "<tr><td>" . $auto_id . "</td>";
+            echo "<td>" . date("d.m.Y", ($time + 2 * 3600)) . "</td>";
+            echo "<td>" . date("H:i:s", ($time + 2 * 3600)) . "</td>";
+            echo "<td>" . $description . "</td>";
+            if ($amount >= 0) {
                 echo "<td align='right' style='color: green'>";
             } else {
                 echo "<td align='right' style='color: red'>";
             }
-            echo ($transaction[$i]['amount'] / 100) . "</td>";
-            echo "<td>" . ($transaction[$i]['mcc']) . "</td>";
-            echo "<td>" . ($transaction[$i]['cashbackAmount'] / 100) . "</td>";
-            echo "<td>" . (($transaction[$i]['commissionRate']) / 100) . "</td>";
-            echo "<td><b>" . ($transaction[$i]['balance'] / 100) . "</b></td></tr>";
+            echo ($amount / 100) . "</td>";
+            //echo "<td>" . $mcc . "</td>";
+            echo "<td>" . ($cashbackAmount / 100) . "</td>";
+            //echo "<td>" . ($commissionRate / 100) . "</td>";
+            echo "<td><b>" . ($balance / 100) . "</b></td></tr>";
         }
         ?>
 
@@ -128,22 +116,22 @@ if($ustat->user_info){
         $cshb_out = 0; //------------------kostyl
 
         for ($i = 0; $i < $size; $i++) {
-            $year = (int)date("Y", ($transaction[$i]['time'] + 2 * 3600));
-            $mnth = (int)date("m", ($transaction[$i]['time'] + 2 * 3600));
-            if ($transaction[$i]['amount'] >= 0) {
-                $plus += $transaction[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['pl'] += $transaction[$i]['amount'];
+            $year = (int)date("Y", ($transactions[$i]['time'] + 2 * 3600));
+            $mnth = (int)date("m", ($transactions[$i]['time'] + 2 * 3600));
+            if ($transactions[$i]['amount'] >= 0) {
+                $plus += $transactions[$i]['amount'];
+                @$mn_bal["$year"]["$mnth"]['pl'] += $transactions[$i]['amount'];
             } else {
-                $minus += $transaction[$i]['amount'];
-                @$mn_bal["$year"]["$mnth"]['mns'] += $transaction[$i]['amount'];
+                $minus += $transactions[$i]['amount'];
+                @$mn_bal["$year"]["$mnth"]['mns'] += $transactions[$i]['amount'];
             }
-            $comm += $transaction[$i]['commissionRate'];
-            $cashb += $transaction[$i]['cashbackAmount'];
+            $comm += $transactions[$i]['commissionRate'];
+            $cashb += $transactions[$i]['cashbackAmount'];
 
             //ttl cshb out--------------------
             $cshb = array();
-            if (preg_match("/Виведення кешбеку/", $transaction[$i]['description'])) {
-                preg_match("/\d+\.\d{2}/", $transaction[$i]['description'], $cshb);
+            if (preg_match("/Виведення кешбеку/", $transactions[$i]['description'])) {
+                preg_match("/\d+\.\d{2}/", $transactions[$i]['description'], $cshb);
                 $cshb_out += (float)$cshb[0];
             }
             //ttl csh--------------------

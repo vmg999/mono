@@ -8,7 +8,7 @@ class db
     private $db_name;
     private $database;
 
-    public $res;
+    public $db_answer;
 
     public function __construct()
     {
@@ -41,8 +41,8 @@ class db
         } else {
             $query = "SELECT * FROM $table";
         }
-        $this->res = $this->database->query($query);
-        return $this->res->fetch_all(1);
+        $this->db_answer = $this->database->query($query);
+        return $this->db_answer->fetch_all(1);
     }
 
     /**
