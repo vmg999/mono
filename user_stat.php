@@ -57,6 +57,7 @@ class user_stat
                 $this->account = $account;
                 $this->account_id = $a->id;
                 $this->table = "$this->db_table_template" . "$account";
+                break;
             } else {
                 $this->table = $this->default_table;
             }

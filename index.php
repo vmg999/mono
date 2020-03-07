@@ -5,7 +5,6 @@ session_start();
 $ustat = new user_stat();
 $ustat->get_user_info();
 
-
 if ($_GET != null) {
     $ustat->set_account($_GET['account']);
     $db_answer = $ustat->db_save_new_transaction();
@@ -45,10 +44,11 @@ $ustat->get_statistics_by_transactnions();
             <?php echo ($ustat->user_info->accounts[1]->cashbackType); ?>
         </p>
     </div>
-<!--   <?php //echo (time()-$_SESSION['get_pers_info_time']);?> -->
+
     <div class="status">
         <p><b>
                 <?php if (isset($db_answer)) {
+                    echo (time()-$_SESSION['get_pers_info_time'])."s  ";
                     echo $db_answer;
                 } ?>
             </b>
