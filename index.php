@@ -1,7 +1,10 @@
 <?php
 require_once 'user_stat.php';
+session_start();
+
 $ustat = new user_stat();
 $ustat->get_user_info();
+
 
 if ($_GET != null) {
     $ustat->set_account($_GET['account']);
@@ -25,22 +28,24 @@ $ustat->get_statistics_by_transactnions();
 
 <body>
 <a href="index.php"><h1>Monobank INFO</h1></a>
-<div>
+<div id="hh">
     <div id="balance">
         <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[0]->type); ?>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
                 </span>
             </b>
+            <?php echo ($ustat->user_info->accounts[0]->cashbackType); ?>
         </p>
         <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[1]->type); ?>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
                 </span>
             </b>
+            <?php echo ($ustat->user_info->accounts[1]->cashbackType); ?>
         </p>
     </div>
-
+<!--   <?php //echo (time()-$_SESSION['get_pers_info_time']);?> -->
     <div class="status">
         <p><b>
                 <?php if (isset($db_answer)) {
@@ -126,6 +131,7 @@ $ustat->get_statistics_by_transactnions();
     <h2>Stat</h2>
     <table class="table-tr">
         <?php
+        echo "<tr><td>Транзакций</td><td>" . $quantity . "</td></tr>";
         echo "<tr><td>Комиссия</td><td>" . ($commission / 100) . "</td></tr>";
         echo "<tr><td>Кэшбек</td><td>" . ($cashback / 100) . "</td></tr>";
         echo "<tr><td>Весь Кэшбек</td><td>" . ($total_cashback / 100) . "</td></tr>";

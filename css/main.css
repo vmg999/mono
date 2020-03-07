@@ -7,8 +7,13 @@ a {
     display: inline-block;
 }
 
+#hh{
+    width: 100%;
+    height: 100px;
+}
+
 .transact{
-    /*position: relative;*/
+    /*position: absolute;*/
     float: left;
     margin: 0 auto;
     padding-left: 22px;
@@ -67,6 +72,7 @@ a {
     font-size: 22px;
     border: red solid;
     width: 25%;
+    float: left;
 }
 #balance p{
     margin: 0;
@@ -76,6 +82,7 @@ a {
     padding: 4px 16px;
     align-self: center;
     color: dimgray;
+    float: left;
 }
 
 .blnc{

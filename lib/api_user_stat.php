@@ -36,7 +36,13 @@ class api_user_stat
 
     public function get_pers_info()
     {
-        $this->person_info = json_decode(file_get_contents($this->api . $this->pers, false, $this->context));
+        if($_SESSION['get_pers_info_time']==null or (time()-$_SESSION['get_pers_info_time'])>60) {
+            $this->person_info = json_decode(file_get_contents($this->api . $this->pers, false, $this->context));
+            $_SESSION['get_pers_info_time'] = time();
+            $_SESSION['pers_info']=$this->person_info;
+        }else{
+            $this->person_info=$_SESSION['pers_info'];
+        }
         return $this->person_info;
     }
 
@@ -45,7 +51,13 @@ class api_user_stat
      */
     public function get_user_statement($account_id)
     {
-        $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $account_id . "/" . (time() - $this->available_period) . "/" . (time()), false, $this->context));
+        if(@$_SESSION[$account_id]['get_user_statement_time']==null or (time()-$_SESSION[$account_id]['get_user_statement_time'])>60) {
+            $this->user_statement = json_decode(file_get_contents($this->api . $this->state . $account_id . "/" . (time() - $this->available_period) . "/" . (time()), false, $this->context));
+            $_SESSION[$account_id]['get_user_statement_time'] = time();
+            $_SESSION[$account_id]['user_statement']=$this->user_statement;
+        }else{
+            $this->user_statement=$_SESSION[$account_id]['user_statement'];
+        }
         return $this->user_statement;
     }
 }

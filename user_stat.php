@@ -3,7 +3,6 @@ require_once 'config.php';
 require_once 'lib/db.php';
 require_once 'lib/api_user_stat.php';
 
-
 /**
  * Class user_stat
  * Получение транзакций
@@ -79,7 +78,7 @@ class user_stat
     /**
      * Сравнение сохраненных в БД и полученных по API транзакций и вычисление новых
      */
-    public function is_there_new_transactions()
+    public function get_new_transactions()
     {
         $new_transactions = array();
         $db_data = $this->db->get_transactions($this->table);
@@ -114,9 +113,8 @@ class user_stat
      */
     public function db_save_new_transaction()
     {
-        $new_transactions = $this->is_there_new_transactions();
-        $resq = $this->db->save_transactions($this->table, $new_transactions);
-        return $resq;
+        $new_transactions = $this->get_new_transactions();
+        return $this->db->save_transactions($this->table, $new_transactions);
     }
 
     /**
