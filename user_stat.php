@@ -181,4 +181,28 @@ class user_stat
         return $this->statistics_by_transactnions;
     }
 
+    /**
+     * Подсчет суммы транзакций по описанию
+     * @param string $description
+     * @return float|int
+     */
+    public function get_sum_by_descriptionn(string $description = '.+')
+    {
+        if (!$this->saved_transactions) {
+            $this->get_saved_transactions();
+        }
+        $sum = 0;
+        $quantity = count($this->saved_transactions);
+        $transactions = $this->saved_transactions;
+        $pattern = "/" . $description . "/";
+
+        for ($i = 0; $i < $quantity; $i++) {
+            if (preg_match($pattern, $transactions[$i]['description'])) {
+                $sum += $transactions[$i]['amount'];
+            }
+        }
+        return $sum / 100;
+
+    }
+
 }
