@@ -94,3 +94,9 @@ a {
     margin: 0 auto;
     padding-left: 33px;
 }
+
+.currency{
+    position: absolute;
+    right: 15px;
+    top:15px;
+}

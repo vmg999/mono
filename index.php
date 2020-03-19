@@ -1,6 +1,13 @@
 <?php
 require_once 'user_stat.php';
+require_once 'lib/api_currency.php';
 session_start();
+date_default_timezone_set('Europe/Kiev');
+
+//курсы
+$cur = new get_cur;
+$currency = $cur->get_currency();
+//
 
 $ustat = new user_stat();
 $ustat->get_user_info();
@@ -27,6 +34,21 @@ $ustat->get_statistics_by_transactnions();
 
 <body>
 <a href="index.php"><h1>Monobank INFO</h1></a>
+<div class="currency">
+    <table>
+        <?php
+        for ($i = 0; $i < 4; $i++) {
+            echo "<tr>";
+            echo "<td>" . date("d.m", $currency[$i]->date) . " </td>";
+            echo "<td>" . date("H:i", $currency[$i]->date) . " </td>";
+            echo "<td> " . $currency[$i]->currencyAname . " / ";
+            echo $currency[$i]->currencyBname . " </td>";
+            echo "<td>" . $currency[$i]->rateBuy . " / ".$currency[$i]->rateSell . "</td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
+</div>
 <div id="hh">
     <div id="balance">
         <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[0]->type); ?>:
@@ -54,6 +76,8 @@ $ustat->get_statistics_by_transactnions();
             </b>
         </p>
     </div>
+
+
 </div>
 
 <div class="transact">
@@ -85,8 +109,8 @@ $ustat->get_statistics_by_transactnions();
         for ($i = $size - 1; $i >= ($size - 10); $i--) {
             @extract($transactions[$i]);
             echo "<tr><td>" . $auto_id . "</td>";
-            echo "<td>" . date("d.m.Y", ($time + 2 * 3600)) . "</td>";
-            echo "<td>" . date("H:i:s", ($time + 2 * 3600)) . "</td>";
+            echo "<td>" . date("d.m.Y", ($time)) . "</td>";
+            echo "<td>" . date("H:i:s", ($time)) . "</td>";
             echo "<td>" . $description . "</td>";
             if ($amount >= 0) {
                 echo "<td align='right' style='color: green'>";

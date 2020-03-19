@@ -22,7 +22,13 @@ class get_cur
 
     public function get_currency()
     {
+        if(@$_SESSION['get_currency_time']==null or (time()-$_SESSION['get_currency_time'])>60) {
         $this->currency = json_decode(file_get_contents($this->api . $this->pub_get));
+            $_SESSION['get_currency_time'] = time();
+            $_SESSION['currency']=$this->currency;
+        }else{
+            $this->currency=$_SESSION['currency'];
+        }
 
         // Добавление в объект расшифровки кодов валют
         $t_size = count($this->currency);

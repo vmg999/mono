@@ -76,13 +76,13 @@ class db
                             $currencyCode, $commissionRate, $cashbackAmount, $balance, $hold)";
 
                 if ($this->database->query($query)) {
-                    $result = "New transaction added : " . date("d.m - H:i", time() + 3600 * 3);
+                    $result = "New transaction added : " . date("d.m - H:i");
                 } else {
                     $result = "Error";
                 }
             }
         } else {
-            $result = "No new transaction :  " . date("d.m - H:i", time() + 3600 * 2);
+            $result = "No new transaction :  " . date("d.m - H:i");
         }
         return $result;
 
