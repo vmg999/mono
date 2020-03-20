@@ -71,7 +71,7 @@ a {
     padding: 4px 6px;
     font-size: 22px;
     border: red solid;
-    width: 25%;
+    width: 30%;
     float: left;
 }
 #balance p{
@@ -99,4 +99,9 @@ a {
     position: absolute;
     right: 15px;
     top:15px;
+    font: 18px bold;
+}
+
+.smalltxt{
+    font-size: 14px !important;
 }
