@@ -51,19 +51,25 @@ $ustat->get_statistics_by_transactnions();
 </div>
 <div id="hh">
     <div id="balance">
-        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[0]->type); ?>:
+        <p><b>Баланс <abbr title="<?php echo $ustat->user_info->accounts[0]->maskedPan[0]; ?>"><?php echo ucfirst($ustat->user_info->accounts[0]->type); ?></abbr>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
                 </span>
             </b>
-            <?php echo ($ustat->user_info->accounts[0]->cashbackType); ?>
+                <span class="smalltxt">
+                    <?php echo '('.round(($ustat->user_info->accounts[0]->balance / 100)/$currency[0]->rateSell,2).' $)';?>
+                </span>
+
         </p>
-        <p><b>Баланс <?php echo ucfirst($ustat->user_info->accounts[1]->type); ?>:
+        <p><b>Баланс <abbr title="<?php echo $ustat->user_info->accounts[1]->maskedPan[0]; ?>"><?php echo ucfirst($ustat->user_info->accounts[1]->type); ?></abbr>:
                 <span class="blnc">
                     <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
                 </span>
             </b>
-            <?php echo ($ustat->user_info->accounts[1]->cashbackType); ?>
+                <span class="smalltxt">
+                    <?php echo '('.round(($ustat->user_info->accounts[1]->balance / 100)/$currency[0]->rateSell, 2).' $)';?>
+                </span>
+
         </p>
     </div>
 

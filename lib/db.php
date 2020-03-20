@@ -72,7 +72,7 @@ class db
 
                 $query = "INSERT INTO $table (id, time, description, mcc, amount, 
                           operationAmount, currencyCode, commissionRate, cashbackAmount, balance,
-                           hold) VALUES('$id', $time,'$description',$mcc, $amount, $operationAmount,
+                           hold) VALUES('$id', $time, '$description' ,$mcc, $amount, $operationAmount,
                             $currencyCode, $commissionRate, $cashbackAmount, $balance, $hold)";
 
                 if ($this->database->query($query)) {
