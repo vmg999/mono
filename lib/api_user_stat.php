@@ -36,7 +36,7 @@ class api_user_stat
 
     public function get_pers_info()
     {
-        if($_SESSION['get_pers_info_time']==null or (time()-$_SESSION['get_pers_info_time'])>60) {
+        if(@$_SESSION['get_pers_info_time']==null or (time()-$_SESSION['get_pers_info_time'])>60) {
             $this->person_info = json_decode(file_get_contents($this->api . $this->pers, false, $this->context));
             $_SESSION['get_pers_info_time'] = time();
             $_SESSION['pers_info']=$this->person_info;

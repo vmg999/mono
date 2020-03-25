@@ -14,6 +14,7 @@ class user_stat
     private $db_table_template;
     private $default_table;
     private $account_id;
+    private $cards_order;
 
     public $table;
     public $account;
@@ -28,8 +29,10 @@ class user_stat
 
         global $db_table_template;
         global $default_table;
+        global $cards_order;
         $this->db_table_template = $db_table_template;
         $this->default_table = $default_table;
+        $this->cards_order=$cards_order;
 
         $this->set_account();
     }
@@ -40,6 +43,19 @@ class user_stat
     public function get_user_info()
     {
         $this->user_info = $this->api_user_stat->get_pers_info();
+
+        // Сортировка карт в заданном в настройках порядке
+        $tmp_accounts=array();
+        foreach ($this->cards_order as $card) {
+            foreach ($this->user_info->accounts as $account) {
+                $last4dig = (int)substr($account->maskedPan[0], -4);
+                if ($card == $last4dig) {
+                    $tmp_accounts[$card] = $account;
+                }
+            }
+        }
+        $this->user_info->accounts=$tmp_accounts;
+
         return $this->user_info;
     }
 

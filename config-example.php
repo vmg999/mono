@@ -15,3 +15,6 @@ $api="https://api.monobank.ua";
 $pers="/personal/client-info";
 $state="/personal/statement/";
 $getcurrency="/bank/currency";
+
+//last 4 digits
+$cards_order=[0=>'', 1=>'', 3=>''];

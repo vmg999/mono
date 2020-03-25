@@ -7,6 +7,7 @@ date_default_timezone_set('Europe/Kiev');
 //курсы
 $cur = new get_cur;
 $currency = $cur->get_currency();
+$curval=new get_iso4217_list();
 //
 
 $ustat = new user_stat();
@@ -35,14 +36,14 @@ $ustat->get_statistics_by_transactnions();
 <body>
 <a href="index.php"><h1>Monobank INFO</h1></a>
 <div class="currency">
-    <table>
+    <table class="currency_tbl">
         <?php
         for ($i = 0; $i < 4; $i++) {
             echo "<tr>";
             echo "<td>" . date("d.m", $currency[$i]->date) . " </td>";
             echo "<td>" . date("H:i", $currency[$i]->date) . " </td>";
-            echo "<td> " . $currency[$i]->currencyAname . " / ";
-            echo $currency[$i]->currencyBname . " </td>";
+            echo "<td>  " . $currency[$i]->currencyAname . " / ";
+            echo $currency[$i]->currencyBname . "  </td>";
             echo "<td>" . $currency[$i]->rateBuy . " / ".$currency[$i]->rateSell . "</td>";
             echo "</tr>";
         }
@@ -51,26 +52,21 @@ $ustat->get_statistics_by_transactnions();
 </div>
 <div id="hh">
     <div id="balance">
-        <p><b>Баланс <abbr title="<?php echo $ustat->user_info->accounts[0]->maskedPan[0]; ?>"><?php echo ucfirst($ustat->user_info->accounts[0]->type); ?></abbr>:
-                <span class="blnc">
-                    <?php echo($ustat->user_info->accounts[0]->balance / 100); ?>
-                </span>
-            </b>
-                <span class="smalltxt">
-                    <?php echo '('.round(($ustat->user_info->accounts[0]->balance / 100)/$currency[0]->rateSell,2).' $)';?>
-                </span>
 
-        </p>
-        <p><b>Баланс <abbr title="<?php echo $ustat->user_info->accounts[1]->maskedPan[0]; ?>"><?php echo ucfirst($ustat->user_info->accounts[1]->type); ?></abbr>:
-                <span class="blnc">
-                    <?php echo($ustat->user_info->accounts[1]->balance / 100); ?>
-                </span>
-            </b>
-                <span class="smalltxt">
-                    <?php echo '('.round(($ustat->user_info->accounts[1]->balance / 100)/$currency[0]->rateSell, 2).' $)';?>
-                </span>
+        <?php
+        foreach ($ustat->user_info->accounts as $account) {
+            echo "<p><b>Баланс <abbr title='".$account->maskedPan[0]."'>".ucfirst($account->type)."</abbr>: ";
+            echo "<span class='blnc'>".($account->balance / 100)." </span></b><span class='smalltxt'>";
+            $curname=$curval->get_cur_by_code($account->currencyCode);
+            echo $curname['CurrencyAbbr'];
+            if($account->currencyCode != 840) {
+                echo ' (' . round(($account->balance / 100) / $currency[0]->rateSell, 2) . ' $)';
+            }
+            echo "</span></p>";
+        }
+        ?>
 
-        </p>
+
     </div>
 
     <div class="status">
@@ -85,15 +81,15 @@ $ustat->get_statistics_by_transactnions();
 
 
 </div>
-
+<br><br><br>
 <div class="transact">
     <div class="upd">
         <div class="upd"><h2>Транзакции по карте: </h2></div>
         <div class="upd">
-            <button name="account"><a href="/?account=black">Black</a></button>
+            <a href="/?account=black"><button name="account">Black</button></a>
         </div>
         <div class="upd">
-            <button name="account"><a href="/?account=white">White</a></button>
+            <a href="/?account=white"><button name="account">White</button></a>
         </div>
 
     </div>
