@@ -2,27 +2,13 @@
 
 class db
 {
-    private $db_host;
-    private $db_user;
-    private $db_psw;
-    private $db_name;
     private $database;
-
     public $db_answer;
 
     public function __construct()
     {
-        global $db_host;
-        global $db_user;
-        global $db_psw;
-        global $db_name;
 
-        $this->db_host = $db_host;
-        $this->db_user = $db_user;
-        $this->db_psw = $db_psw;
-        $this->db_name = $db_name;
-
-        $this->database = new mysqli($this->db_host, $this->db_user, $this->db_psw, $this->db_name);
+        $this->database = new mysqli(SETTINGS['db_host'], SETTINGS['db_user'], SETTINGS['db_psw'], SETTINGS['db_name']);
         $this->database->set_charset("utf8");
     }
 

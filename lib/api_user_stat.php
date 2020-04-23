@@ -15,19 +15,14 @@ class api_user_stat
 
     public function __construct()
     {
-        global $token;
-        global $api;
-        global $pers;
-        global $state;
-        global $available_period;
+        $this->tok = SETTINGS['token'];
+        $this->api = SETTINGS['URLS']['api'];
+        $this->pers = SETTINGS['URLS']['pers'];
+        $this->state = SETTINGS['URLS']['state'];
+        $this->available_period = SETTINGS['available_period'];
 
-        $this->tok = $token;
         $this->opts = array('http' => array('method' => "GET", 'header' => "X-Token:$this->tok\r\n" . "Cookie: foo=bar\r\n"));
         $this->context = stream_context_create($this->opts);
-        $this->api = $api;
-        $this->pers = $pers;
-        $this->state = $state;
-        $this->available_period = $available_period;
     }
 
     /**

@@ -14,10 +14,8 @@ class get_cur
 
     public function __construct()
     {
-        global $api;
-        global $getcurrency;
-        $this->api = $api;
-        $this->pub_get = $getcurrency;
+        $this->api = SETTINGS['URLS']['api'];
+        $this->pub_get = SETTINGS['URLS']['getcurrency'];
     }
 
     public function get_currency()

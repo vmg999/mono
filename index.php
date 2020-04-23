@@ -7,7 +7,7 @@ date_default_timezone_set('Europe/Kiev');
 //курсы
 $cur = new get_cur;
 $currency = $cur->get_currency();
-$curval=new get_iso4217_list();
+$curval = new get_iso4217_list();
 //
 
 $ustat = new user_stat();
@@ -44,7 +44,7 @@ $ustat->get_statistics_by_transactnions();
             echo "<td>" . date("H:i", $currency[$i]->date) . " </td>";
             echo "<td>  " . $currency[$i]->currencyAname . " / ";
             echo $currency[$i]->currencyBname . "  </td>";
-            echo "<td>" . $currency[$i]->rateBuy . " / ".$currency[$i]->rateSell . "</td>";
+            echo "<td>" . $currency[$i]->rateBuy . " / " . $currency[$i]->rateSell . "</td>";
             echo "</tr>";
         }
         ?>
@@ -55,11 +55,11 @@ $ustat->get_statistics_by_transactnions();
 
         <?php
         foreach ($ustat->user_info->accounts as $account) {
-            echo "<p><b>Баланс <abbr title='".$account->maskedPan[0]."'>".ucfirst($account->type)."</abbr>: ";
-            echo "<span class='blnc'>".($account->balance / 100)." </span></b><span class='smalltxt'>";
-            $curname=$curval->get_cur_by_code($account->currencyCode);
+            echo "<p><b>Баланс <abbr title='" . $account->maskedPan[0] . "'>" . ucfirst($account->type) . "</abbr>: ";
+            echo "<span class='blnc'>" . ($account->balance / 100) . " </span></b><span class='smalltxt'>";
+            $curname = $curval->get_cur_by_code($account->currencyCode);
             echo $curname['CurrencyAbbr'];
-            if($account->currencyCode != 840) {
+            if ($account->currencyCode != 840) {
                 echo ' (' . round(($account->balance / 100) / $currency[0]->rateSell, 2) . ' $)';
             }
             echo "</span></p>";
@@ -72,7 +72,7 @@ $ustat->get_statistics_by_transactnions();
     <div class="status">
         <p><b>
                 <?php if (isset($db_answer)) {
-                    echo (time()-$_SESSION['get_pers_info_time'])."s  ";
+                    echo (time() - $_SESSION['get_pers_info_time']) . "s  ";
                     echo $db_answer;
                 } ?>
             </b>
@@ -86,10 +86,14 @@ $ustat->get_statistics_by_transactnions();
     <div class="upd">
         <div class="upd"><h2>Транзакции по карте: </h2></div>
         <div class="upd">
-            <a href="/?account=black"><button name="account">Black</button></a>
+            <a href="/?account=black">
+                <button name="account">Black</button>
+            </a>
         </div>
         <div class="upd">
-            <a href="/?account=white"><button name="account">White</button></a>
+            <a href="/?account=white">
+                <button name="account">White</button>
+            </a>
         </div>
 
     </div>
@@ -108,7 +112,7 @@ $ustat->get_statistics_by_transactnions();
             </thead>
         </div>
         <?php
-        for ($i = $size - 1; $i >= ($size - 10); $i--) {
+        for ($i = $size - 1; $i >= ($size - 50); $i--) {
             @extract($transactions[$i]);
             echo "<tr><td>" . $auto_id . "</td>";
             echo "<td>" . date("d.m.Y", ($time)) . "</td>";
