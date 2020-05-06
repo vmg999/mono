@@ -172,7 +172,7 @@ class user_stat
             }
             //проценты--------------------------------------------------
             if (preg_match("/Начисление процентов/", $transactions[$i]['description']) or
-                preg_match("/відсотк/", $transactions[$i]['description'])) {
+                preg_match("/ідсотк/", $transactions[$i]['description'])) {
                 $percents += $transactions[$i]['amount'];
             }
 
