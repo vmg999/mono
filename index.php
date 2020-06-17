@@ -135,7 +135,7 @@ $ustat->get_statistics_by_transactnions();
 </div>
 
 <div class="stat">
-    <h2>Stat</h2>
+    <div class="stt"><h2>Stat</h2></div>
     <table class="table-tr">
 
         <th>Год</th>
@@ -158,7 +158,7 @@ $ustat->get_statistics_by_transactnions();
 </div>
 
 <div class="stat">
-    <h2>Stat</h2>
+    <div class="stt"><h2>Stat</h2></div>
     <table class="table-tr">
         <?php
         echo "<tr><td>Транзакций</td><td>" . $quantity . "</td></tr>";

@@ -1,3 +1,8 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
 body{
     background-color: lightgoldenrodyellow;
 }
@@ -16,7 +21,7 @@ a {
     /*position: absolute;*/
     float: left;
     margin: 0 auto;
-    padding-left: 22px;
+    padding-left: 12px;
 }
 .transact h2{
     text-align: center;
@@ -48,6 +53,7 @@ a {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    padding: 8px 0;
     /*float:right;*/
 }
 .upd button{
@@ -64,11 +70,13 @@ a {
 .upd button:hover{
     cursor: pointer;
     background: #ffb323;
-
+    padding: 4px 16px;
+    margin: 0 15px;
 }
 
 #balance{
     padding: 4px 6px;
+    margin-left: 12px;
     font-size: 22px;
     border: red solid;
     width: 30%;
@@ -92,7 +100,7 @@ a {
     float: left;
     text-align: center;
     margin: 0 auto;
-    padding-left: 33px;
+    padding-left: 15px;
 }
 
 .currency{
@@ -114,4 +122,8 @@ a {
 
 .smalltxt{
     font-size: 14px !important;
+}
+
+.stt{
+    padding: 19px 0;
 }
