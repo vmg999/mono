@@ -27,9 +27,9 @@ $t = count($currency);
             <th></th>
             <th>Дата</th>
             <th>Время</th>
-            <th>Валюта А</th>
+            <th colspan="2">Валюта А</th>
             <th></th>
-            <th>Валюта В</th>
+            <th colspan="2">Валюта В</th>
             <th>Buy</th>
             <th>Sell</th>
         </tr>
@@ -40,15 +40,17 @@ $t = count($currency);
             echo "<td>" . date("d.m.Y", $currency[$i]->date) . "</td>";
             echo "<td>" . date("H:i", $currency[$i]->date) . "</td>";
             echo "<td>" . $currency[$i]->currencyAname . "</td>";
-            echo "<td>---></td>";
+            echo "<td>" . $currency[$i]->currencyAfullName . "</td>";
+            echo "<td>"."\u{2192}"."</td>";
             echo "<td>" . $currency[$i]->currencyBname . "</td>";
+            echo "<td>" . $currency[$i]->currencyBfullName . "</td>";
             if (isset($currency[$i]->rateBuy)) {
                 echo "<td>" . $currency[$i]->rateBuy . "</td>";
             }
             if (isset($currency[$i]->rateSell)) {
                 echo "<td>" . $currency[$i]->rateSell . "</td>";
             } elseif (isset($currency[$i]->rateCross)) {
-                echo "<td>" . $currency[$i]->rateCross . "</td><td><-- Cross</td>";
+                echo "<td colspan='2' style='text-align: center'>" . $currency[$i]->rateCross . "</td>";
             }
             echo "</tr>";
         }

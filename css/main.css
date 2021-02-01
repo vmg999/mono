@@ -79,6 +79,7 @@ a {
     margin-left: 12px;
     font-size: 22px;
     border: red solid;
+    border-radius: 5px;
     width: 30%;
     float: left;
 }

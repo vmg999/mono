@@ -39,6 +39,8 @@ class get_cur
             $c_iB = $z->get_cur_by_code($codeB);
             $this->currency[$ii]->currencyAname = (string)$c_iA['CurrencyAbbr'];
             $this->currency[$ii]->currencyBname = (string)$c_iB['CurrencyAbbr'];
+            $this->currency[$ii]->currencyAfullName = (string)$c_iA['CurrencyName'];
+            $this->currency[$ii]->currencyBfullName = (string)$c_iB['CurrencyName'];
             $this->currency[$ii]->countryAname = (string)$c_iA['CountryName'];
             $this->currency[$ii]->countryBname = (string)$c_iB['CountryName'];
         }

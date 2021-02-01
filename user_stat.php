@@ -177,14 +177,17 @@ class user_stat
             }
 
         }
-        //средний месяц-----------------------------------------------------
+        //средний закрытый месяц (без текущего)-----------------------------------
         $mnttl = 0;
         foreach ($mn_bal as $y) {
             $mnttl += count($y);
         }
         $last = @end(end($mn_bal));
-        $average_mnt_plus = (int)floor(($plus - $last['pl']) / ($mnttl - 1));
-        @$average_mnt_minus = (int)floor(($minus - $last['mns']) / ($mnttl - 1));
+        array_key_exists('pl', $last) ? $last_plus = $last['pl'] : $last_plus = 0;
+        array_key_exists('mns', $last) ? $last_minus = $last['mns'] : $last_minus = 0;
+
+        $average_mnt_plus = (int)floor(($plus - $last_plus) / ($mnttl - 1));
+        @$average_mnt_minus = (int)floor(($minus - $last_minus) / ($mnttl - 1));
         //---------------------------------------------------------------------
         $cashback = $total_cashback - ((int)($cashback_out * 100));
 
