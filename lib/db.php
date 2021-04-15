@@ -42,7 +42,7 @@ class db
 
                 $id = $new_transactions[$i]->id;
                 $time = $new_transactions[$i]->time;
-                $description = $new_transactions[$i]->description;
+                $description = $this->database->real_escape_string($new_transactions[$i]->description);
                 $mcc = $new_transactions[$i]->mcc;
                 $amount = $new_transactions[$i]->amount;
                 $operationAmount = $new_transactions[$i]->operationAmount;

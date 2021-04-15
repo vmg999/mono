@@ -9,8 +9,8 @@ $t = count($currency);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/monobank_currency.css">
-    <link rel="icon" href="img/favicon-mono.ico">
+    <link rel="stylesheet" type="text/css" href="/css/monobank_currency.css">
+    <link rel="icon" href="/img/favicon-mono.ico">
     <title>Monobank currency</title>
 </head>
 <body>
@@ -18,9 +18,9 @@ $t = count($currency);
     <h1>Monobank currency</h1>
     <h2>
         <?php
-        date_default_timezone_set('Europe/Kiev');
-        echo date("d/m/Y - H:i:s", time());
-        ?>
+date_default_timezone_set('Europe/Kiev');
+echo date("d/m/Y - H:i:s", time());
+?>
     </h2>
     <table>
         <tr>
@@ -34,27 +34,27 @@ $t = count($currency);
             <th>Sell</th>
         </tr>
         <?php
-        for ($i = 0; $i < $t; $i++) {
-            echo "<tr>";
-            echo "<td>" . ($i + 1) . "</td>";
-            echo "<td>" . date("d.m.Y", $currency[$i]->date) . "</td>";
-            echo "<td>" . date("H:i", $currency[$i]->date) . "</td>";
-            echo "<td>" . $currency[$i]->currencyAname . "</td>";
-            echo "<td>" . $currency[$i]->currencyAfullName . "</td>";
-            echo "<td>"."\u{2192}"."</td>";
-            echo "<td>" . $currency[$i]->currencyBname . "</td>";
-            echo "<td>" . $currency[$i]->currencyBfullName . "</td>";
-            if (isset($currency[$i]->rateBuy)) {
-                echo "<td>" . $currency[$i]->rateBuy . "</td>";
-            }
-            if (isset($currency[$i]->rateSell)) {
-                echo "<td>" . $currency[$i]->rateSell . "</td>";
-            } elseif (isset($currency[$i]->rateCross)) {
-                echo "<td colspan='2' style='text-align: center'>" . $currency[$i]->rateCross . "</td>";
-            }
-            echo "</tr>";
-        }
-        ?>
+for ($i = 0; $i < $t; $i++) {
+	echo "<tr>";
+	echo "<td>" . ($i + 1) . "</td>";
+	echo "<td>" . date("d.m.Y", $currency[$i]->date) . "</td>";
+	echo "<td>" . date("H:i", $currency[$i]->date) . "</td>";
+	echo "<td>" . $currency[$i]->currencyAname . "</td>";
+	echo "<td>" . $currency[$i]->currencyAfullName . "</td>";
+	echo "<td>" . "\u{2192}" . "</td>";
+	echo "<td>" . $currency[$i]->currencyBname . "</td>";
+	echo "<td>" . $currency[$i]->currencyBfullName . "</td>";
+	if (isset($currency[$i]->rateBuy)) {
+		echo "<td>" . $currency[$i]->rateBuy . "</td>";
+	}
+	if (isset($currency[$i]->rateSell)) {
+		echo "<td>" . $currency[$i]->rateSell . "</td>";
+	} elseif (isset($currency[$i]->rateCross)) {
+		echo "<td colspan='2' style='text-align: center'>" . $currency[$i]->rateCross . "</td>";
+	}
+	echo "</tr>";
+}
+?>
     </table>
 </div>
 </body>
